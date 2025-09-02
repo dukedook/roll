@@ -1,0 +1,26 @@
+#!/bin/bash
+
+count=$(echo $1 | sed -e 's/\([0-9]*\)d\([0-9]*\)/\1/g')
+if [[ $count = "" ]]; then
+    count=1
+fi
+
+high=$(echo $1 | sed -e 's/\([0-9]*\)d\([0-9]*\)/\2/g')
+if [[ $high = "" ]]; then
+    echo "Syntax: roll [dice_count]d[die_sides]"
+    echo "ie: to roll two 6-sided dice: roll 2d6"
+    exit
+fi
+
+rolls=()
+while [[ $count > 0 ]]; do
+    rolls+=" $((1 + $RANDOM % $high))"
+    let count=$count-1 
+done
+
+total=0
+for i in ${rolls[@]}; do
+    let total+=$i
+done  
+
+echo ${bold}$total${normal} "("$(echo $rolls | sed -e 's/ /\+/g')")"
