@@ -1,3 +1,4 @@
+![Screenshot](screenshot.png) \
 Syntax: roll [dice_count]d[die_sides] 
 
 OPTIONS: \
