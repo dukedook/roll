@@ -4,7 +4,7 @@ args=$@
 
 total() {
     total=0
-    for i in ${rolls[@]:1:$1}; do
+    for i in ${rolls[@]:0:$1}; do
         let total+=$i
     done
     if [[ $add != $args ]]; then
@@ -15,7 +15,7 @@ total() {
         let total-=$sub
         modifier="-"$sub
     fi
-    echo -e '\e[1m'$total'\e[22m' "("$(echo ${rolls[@]:1:$1} | sed -e 's/ /\+/g')")$modifier "'\e[9m'"("$(echo ${rolls[@]:$1:${#rolls[@]}} | sed -e 's/ /\+/g')")"'\e[29m'
+    echo -e '\e[1m'$total'\e[22m' "("$(echo ${rolls[@]:0:$1} | sed -e 's/ /\+/g')")$modifier "'\e[9m'$removed'\e[29m'
 }
 
 count=$(echo $1 | sed -e 's/\([0-9]*\)d.*/\1/g')
@@ -54,10 +54,12 @@ done
 if [[ $high != $@ ]]; then
     IFS=$'\n' rolls=($(sort -nr <<<"${rolls[*]}"))
     unset IFS
+    removed="("$(echo ${rolls[@]:$high:${#rolls[@]}} | sed -e 's/ /\+/g')")"
     total $high
 elif [[ $low != $@ ]]; then
     IFS=$'\n' rolls=($(sort -n <<<"${rolls[*]}"))
     unset IFS
+    removed="("$(echo ${rolls[@]:$low:${#rolls[@]}} | sed -e 's/ /\+/g')")"
     total $low
 else
     total $count
